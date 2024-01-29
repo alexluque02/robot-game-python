@@ -3,7 +3,7 @@ import pygame
 class Robot(pygame.sprite.Sprite):
     def __init__(self, fila, columna, tamano_celda):
         super().__init__()
-        self.image = pygame.image.load("images/robot.png")
+        self.image = pygame.image.load("images/spriteabajo.png")
         self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         self.rect = self.image.get_rect()
         self.posicion = [fila, columna]
@@ -13,17 +13,25 @@ class Robot(pygame.sprite.Sprite):
         self.trajes_agua=[]
         self.diamantes=[]
 
-    def mover(self, direccion, mapa):
+    def mover(self, direccion, mapa, tamano_celda):
         nueva_posicion = self.posicion.copy()
 
         if direccion == "arriba" and nueva_posicion[0] > 0:
             nueva_posicion[0] -= 1
+            self.image = pygame.image.load("images/spritearriba.png")
+            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         elif direccion == "abajo" and nueva_posicion[0] < mapa.filas - 1:
             nueva_posicion[0] += 1
+            self.image = pygame.image.load("images/spriteabajo.png")
+            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         elif direccion == "izquierda" and nueva_posicion[1] > 0:
             nueva_posicion[1] -= 1
+            self.image = pygame.image.load("images/spriteizq.png")
+            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         elif direccion == "derecha" and nueva_posicion[1] < mapa.columnas - 1:
             nueva_posicion[1] += 1
+            self.image = pygame.image.load("images/spriteder.png")
+            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
 
         for agua in mapa.aguas:
             if nueva_posicion == [agua.fila, agua.columna]:

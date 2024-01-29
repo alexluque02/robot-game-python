@@ -10,5 +10,5 @@ ruta_imagen_fondo = 'images/fondo.jpg'
 
 # Iniciar el juego
 juego = Juego(filas, columnas, tamano_celda, ruta_mapa, ruta_imagen_fondo)
-juego.run()
+juego.run(tamano_celda)
 

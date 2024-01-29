@@ -47,7 +47,7 @@ class Juego:
         texto_trajes = font.render(f" {len(self.mapa.robot.trajes_agua)}", True, NEGRO)
         self.screen.blit(texto_trajes, (125, self.filas * self.tamano_celda + 5))
 
-    def run(self):
+    def run(self, tamano_celda):
         jugando = True
         ganador = False
 
@@ -59,13 +59,13 @@ class Juego:
             keys = pygame.key.get_pressed()
 
             if keys[pygame.K_UP]:
-                self.mapa.robot.mover("arriba", self.mapa)
+                self.mapa.robot.mover("arriba", self.mapa, tamano_celda)
             elif keys[pygame.K_DOWN]:
-                self.mapa.robot.mover("abajo", self.mapa)
+                self.mapa.robot.mover("abajo", self.mapa, tamano_celda)
             elif keys[pygame.K_LEFT]:
-                self.mapa.robot.mover("izquierda", self.mapa)
+                self.mapa.robot.mover("izquierda", self.mapa, tamano_celda)
             elif keys[pygame.K_RIGHT]:
-                self.mapa.robot.mover("derecha", self.mapa)
+                self.mapa.robot.mover("derecha", self.mapa, tamano_celda)
 
             self.mapa.robot.recoger_diamantes(self.mapa)
             self.mapa.robot.recoger_trajes_agua(self.mapa)
