@@ -1,6 +1,9 @@
 import pygame
 import sys
 
+from pygame.locals import KEYDOWN, K_t
+
+import mapa
 from mapa import Mapa
 
 ROJO = (255, 0, 0)
@@ -56,6 +59,7 @@ class Juego:
                 if event.type == pygame.QUIT:
                     jugando = False
 
+
             keys = pygame.key.get_pressed()
 
             if keys[pygame.K_UP]:
@@ -67,6 +71,9 @@ class Juego:
             elif keys[pygame.K_RIGHT]:
                 self.mapa.robot.mover("derecha", self.mapa, tamano_celda)
 
+            if keys[pygame.K_t]:
+                self.mapa.robot.usar_traje_agua()
+
             self.mapa.robot.recoger_diamantes(self.mapa)
             self.mapa.robot.recoger_trajes_agua(self.mapa)
 
@@ -77,12 +84,8 @@ class Juego:
             if self.mapa.robot.check_win(self.mapa) and not ganador:
                 ganador = True
 
-            # Dibujar el fondo
             self.screen.fill(BLANCO)
-            self.mapa.dibujar(self.screen)
             self.screen.blit(self.imagen_fondo, (0, 0))
-
-            # Dibujar otros elementos
             self.mapa.dibujar(self.screen)
             self.screen.blit(self.mapa.robot.image,
                              (self.mapa.robot.posicion[1] * self.tamano_celda,

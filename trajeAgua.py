@@ -8,6 +8,7 @@ class TrajeAgua(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         self.rect = self.image.get_rect()
         self.posicion = [fila, columna]
+        self.usado = False
 
     def dibujar(self, screen):
         screen.blit(self.image, (self.posicion[1] * self.rect.width, self.posicion[0] * self.rect.height))

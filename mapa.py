@@ -2,7 +2,6 @@ from agua import Agua
 from diamante import Diamond
 from muro import Muro
 from robot import Robot
-import random
 
 import random
 
@@ -46,7 +45,7 @@ class Mapa:
         # Colocar 15 diamantes aleatoriamente
         diamantes_agregados = 0
         while diamantes_agregados < self.num_diamantes:
-            fila = random.randint(0, self.filas - 1)
+            fila = random.randint(0, self.filas - 2)
             columna = random.randint(0, self.columnas - 1)
             if all(((fila, columna) not in #(muro.posicion for muro in self.muros),
                     (fila, columna) != self.robot.posicion,
@@ -55,10 +54,9 @@ class Mapa:
                 self.diamantes.append(diamante)
                 diamantes_agregados += 1
 
-        # Colocar 2 Trajes aleatoriamente
         trajes_agua_agregados = 0
         while trajes_agua_agregados < self.num_trajes_agua:
-            fila = random.randint(0, self.filas - 1)
+            fila = random.randint(0, self.filas - 2)  # Restamos 2 para excluir la última fila
             columna = random.randint(0, self.columnas - 1)
             if all(((fila, columna) not in (muro.posicion for muro in self.muros),
                     (fila, columna) != self.robot.posicion,
