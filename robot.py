@@ -35,26 +35,24 @@ class Robot(pygame.sprite.Sprite):
             self.image = pygame.image.load("images/spriteder.png")
             self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
 
-        #tiene_traje = self.tiene_traje_agua()
-
         for agua in mapa.aguas:
             if nueva_posicion == [agua.fila, agua.columna]:
                 if self.usando_traje_agua:
-                    print("¡Has usado un traje de agua! El agua no afecta tus vidas.")
+                    print("Estás usando el traje de agua")
                 else:
                     self.vidas -= 3  # Restar 3 puntos de vida por cada celda de agua
                     print("Te sumergiste en el agua. Vidas restantes:", self.vidas)
-
                 break
-
-            # Verificar si está saliendo de una celda de agua y quitar el traje automáticamente
-        for agua in mapa.aguas:
-            if self.posicion == [agua.fila, agua.columna] and nueva_posicion != [agua.fila, agua.columna]:
+            if self.posicion == [agua.fila, agua.columna] and nueva_posicion not in [(a.fila, a.columna) for a in mapa.aguas]:
                 if self.usando_traje_agua:
                     self.quitar_traje_agua()
                     self.usando_traje_agua = False
-                    print("Has salido del agua. El traje de agua ha sido quitado.")
+                    print("Has salido del agua. El traje de agua se ha quitado.")
                 break
+
+        #print("Posición actual:", self.posicion)
+        #print("Nueva posición:", nueva_posicion)
+        #print("Celdas de agua:", [(a.fila, a.columna) for a in mapa.aguas])
 
         if nueva_posicion not in [(diamante.posicion[0], diamante.posicion[1]) for diamante in mapa.diamantes]:
             for muro in mapa.muros:
@@ -62,7 +60,6 @@ class Robot(pygame.sprite.Sprite):
                     self.vidas -= 1  # Restar vida si choca con un muro
                     print("¡Chocaste con un obstáculo! Vidas restantes:", self.vidas)
                     return
-
             self.posicion = nueva_posicion
 
     def recoger_diamantes(self, mapa):
