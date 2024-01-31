@@ -13,6 +13,7 @@ class Robot(pygame.sprite.Sprite):
         self.tiempo_parpadeo = 0
         self.trajes_agua = []
         self.diamantes = []
+        self.bombas = []
         self.usando_traje_agua = False
 
     def mover(self, direccion, mapa, tamano_celda):
@@ -81,6 +82,16 @@ class Robot(pygame.sprite.Sprite):
                 # Puedes agregar aquí la lógica para aplicar el efecto del traje de agua si es necesario
                 break
 
+    def recoger_bombas(self, mapa):
+        for bomba in mapa.bombas:
+            if self.posicion == bomba.posicion:
+                mapa.bombas.remove(bomba)
+                self.bombas.append(bomba)  # Agregar el traje de agua recogido a la lista
+                print("Bomba recogida!")
+                print(len(self.bombas))
+                # Puedes agregar aquí la lógica para aplicar el efecto del traje de agua si es necesario
+                break
+
     def usar_traje_agua(self):
         if self.trajes_agua:
             traje_actual = self.trajes_agua.pop(0)
@@ -99,5 +110,12 @@ class Robot(pygame.sprite.Sprite):
             traje.usado = True
             print("Se ha quitado un traje de agua.")
 
+    def detonar_bomba(self, mapa):
+        if self.bombas:
+            bomba = self.bombas.pop(0)
+            bomba.explotar(mapa)
+
     def check_win(self, mapa):
         return len(mapa.diamantes) == 0
+
+

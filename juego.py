@@ -37,10 +37,10 @@ class Juego:
         imagen_corazon = pygame.image.load("images/corazon.png")
         imagen_corazon = pygame.transform.scale(imagen_corazon, (self.tamano_celda // 2, self.tamano_celda // 2))
 
-        self.screen.blit(imagen_corazon, (60, self.filas * self.tamano_celda + 5))
+        self.screen.blit(imagen_corazon, (55, self.filas * self.tamano_celda + 5))
 
         texto_vidas = font.render(f" {self.mapa.robot.vidas}", True, NEGRO)
-        self.screen.blit(texto_vidas, (75, self.filas * self.tamano_celda + 5))
+        self.screen.blit(texto_vidas, (70, self.filas * self.tamano_celda + 5))
 
         imagen_traje = pygame.image.load("images/traje_agua.png")
         imagen_traje = pygame.transform.scale(imagen_traje, (self.tamano_celda // 2, self.tamano_celda // 2))
@@ -50,6 +50,14 @@ class Juego:
         texto_trajes = font.render(f" {len(self.mapa.robot.trajes_agua)}", True, NEGRO)
         self.screen.blit(texto_trajes, (125, self.filas * self.tamano_celda + 5))
 
+        imagen_bomba = pygame.image.load("images/bomba.png")
+        imagen_bomba = pygame.transform.scale(imagen_bomba, (self.tamano_celda // 2, self.tamano_celda // 2))
+
+        self.screen.blit(imagen_bomba, (160, self.filas * self.tamano_celda + 5))
+
+        texto_bombas = font.render(f" {len(self.mapa.robot.bombas)}", True, NEGRO)
+        self.screen.blit(texto_bombas, (175, self.filas * self.tamano_celda + 5))
+
     def run(self, tamano_celda):
         jugando = True
         ganador = False
@@ -58,7 +66,6 @@ class Juego:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     jugando = False
-
 
             keys = pygame.key.get_pressed()
 
@@ -74,8 +81,12 @@ class Juego:
             if keys[pygame.K_t]:
                 self.mapa.robot.usar_traje_agua()
 
+            if keys[pygame.K_b]:
+                self.mapa.robot.detonar_bomba(self.mapa)
+
             self.mapa.robot.recoger_diamantes(self.mapa)
             self.mapa.robot.recoger_trajes_agua(self.mapa)
+            self.mapa.robot.recoger_bombas(self.mapa)
 
             if self.mapa.robot.vidas <= 0:
                 print("¡Te quedaste sin vidas! Has perdido.")
