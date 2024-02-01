@@ -1,3 +1,4 @@
+from pocion import Pocion
 from agua import Agua
 from bomba import Bomba
 from diamante import Diamond
@@ -10,17 +11,19 @@ from trajeAgua import TrajeAgua
 
 
 class Mapa:
-    def __init__(self, ruta_archivo, tamano_celda, num_diamantes=15, num_trajes_agua=2, num_bombas=3):
+    def __init__(self, ruta_archivo, tamano_celda, num_diamantes=15, num_trajes_agua=2, num_bombas=3, num_pociones=2):
         self.tamano_celda = tamano_celda
         self.num_diamantes = num_diamantes
         self.num_trajes_agua = num_trajes_agua
         self.num_bombas = num_bombas
+        self.num_pociones = num_pociones
         self.diamantes = []
         self.robot = None
         self.muros = []
         self.aguas = []
         self.trajes_agua = []
         self.bombas = []
+        self.pociones = []
         self.cargar_mapa_desde_archivo(ruta_archivo)
 
     def cargar_mapa_desde_archivo(self, ruta_archivo):
@@ -84,6 +87,21 @@ class Mapa:
                 self.bombas.append(bomba)
                 bombas_agregadas += 1
 
+        pociones_agregadas = 0
+        while pociones_agregadas < self.num_pociones:
+            fila = random.randint(0, self.filas - 2)  # Restamos 2 para excluir la última fila
+            columna = random.randint(0, self.columnas - 1)
+            if all(((fila, columna) not in (muro.posicion for muro in self.muros),
+                    (fila, columna) != self.robot.posicion,
+                    (fila, columna) not in (diamante.posicion for diamante in self.diamantes),
+                    (fila, columna) not in (traje_agua.posicion for traje_agua in self.trajes_agua),
+                    (fila, columna) not in (bomba.posicion for bomba in self.bombas),
+                    (fila, columna) not in (pocion.posicion for pocion in self.pociones),
+                    (fila, columna) not in (agua.posicion for agua in self.aguas))):
+                pocion = Pocion(fila, columna, self.tamano_celda)
+                self.pociones.append(pocion)
+                pociones_agregadas += 1
+
     def obtener_muro_en_posicion(self, fila, columna):
         for muro in self.muros:
             if muro.fila == fila and muro.columna == columna:
@@ -120,3 +138,5 @@ class Mapa:
             traje_agua.dibujar(screen)
         for bomba in self.bombas:
             bomba.dibujar(screen)
+        for pocion in self.pociones:
+            pocion.dibujar(screen)

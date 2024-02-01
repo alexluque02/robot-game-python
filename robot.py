@@ -14,6 +14,7 @@ class Robot(pygame.sprite.Sprite):
         self.trajes_agua = []
         self.diamantes = []
         self.bombas = []
+        self.pociones = []
         self.usando_traje_agua = False
 
     def mover(self, direccion, mapa, tamano_celda):
@@ -58,7 +59,7 @@ class Robot(pygame.sprite.Sprite):
         if nueva_posicion not in [(diamante.posicion[0], diamante.posicion[1]) for diamante in mapa.diamantes]:
             for muro in mapa.muros:
                 if nueva_posicion == [muro.fila, muro.columna]:
-                    self.vidas -= 1  # Restar vida si choca con un muro
+                    self.vidas -= 1
                     print("¡Chocaste con un obstáculo! Vidas restantes:", self.vidas)
                     return
             self.posicion = nueva_posicion
@@ -76,20 +77,27 @@ class Robot(pygame.sprite.Sprite):
         for traje_agua in mapa.trajes_agua:
             if self.posicion == traje_agua.posicion:
                 mapa.trajes_agua.remove(traje_agua)
-                self.trajes_agua.append(traje_agua)  # Agregar el traje de agua recogido a la lista
+                self.trajes_agua.append(traje_agua)
                 print("Traje de agua recogido!")
                 print(len(self.trajes_agua))
-                # Puedes agregar aquí la lógica para aplicar el efecto del traje de agua si es necesario
                 break
 
     def recoger_bombas(self, mapa):
         for bomba in mapa.bombas:
             if self.posicion == bomba.posicion:
                 mapa.bombas.remove(bomba)
-                self.bombas.append(bomba)  # Agregar el traje de agua recogido a la lista
+                self.bombas.append(bomba)
                 print("Bomba recogida!")
                 print(len(self.bombas))
-                # Puedes agregar aquí la lógica para aplicar el efecto del traje de agua si es necesario
+                break
+
+    def recoger_pociones(self, mapa):
+        for pocion in mapa.pociones:
+            if self.posicion == pocion.posicion:
+                mapa.pociones.remove(pocion)
+                self.pociones.append(pocion)
+                print("Poción recogida!")
+                print(len(self.pociones))
                 break
 
     def usar_traje_agua(self):
@@ -114,6 +122,17 @@ class Robot(pygame.sprite.Sprite):
         if self.bombas:
             bomba = self.bombas.pop(0)
             bomba.explotar(mapa)
+
+    def tomar_pocion(self):
+        if self.pociones:
+            if self.vidas >= 10:
+                print("Ya tienes la vida al máximo")
+            else:
+                self.vidas = min(10, self.vidas + 5)  # Aumentar las vidas, asegurándose de no superar el máximo (10)
+                self.pociones.remove(self.pociones[0])
+                print("Tomaste una poción. Vidas restantes:", self.vidas)
+        else:
+            print("No tienes pociones disponibles.")
 
     def check_win(self, mapa):
         return len(mapa.diamantes) == 0

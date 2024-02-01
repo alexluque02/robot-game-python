@@ -58,6 +58,14 @@ class Juego:
         texto_bombas = font.render(f" {len(self.mapa.robot.bombas)}", True, NEGRO)
         self.screen.blit(texto_bombas, (175, self.filas * self.tamano_celda + 5))
 
+        imagen_pocion = pygame.image.load("images/pocion.png")
+        imagen_pocion = pygame.transform.scale(imagen_pocion, (self.tamano_celda // 2, self.tamano_celda // 2))
+
+        self.screen.blit(imagen_pocion, (210, self.filas * self.tamano_celda + 5))
+
+        texto_pocion = font.render(f" {len(self.mapa.robot.pociones)}", True, NEGRO)
+        self.screen.blit(texto_pocion, (225, self.filas * self.tamano_celda + 5))
+
     def run(self, tamano_celda):
         jugando = True
         ganador = False
@@ -84,9 +92,13 @@ class Juego:
             if keys[pygame.K_b]:
                 self.mapa.robot.detonar_bomba(self.mapa)
 
+            if keys[pygame.K_p]:
+                self.mapa.robot.tomar_pocion()
+
             self.mapa.robot.recoger_diamantes(self.mapa)
             self.mapa.robot.recoger_trajes_agua(self.mapa)
             self.mapa.robot.recoger_bombas(self.mapa)
+            self.mapa.robot.recoger_pociones(self.mapa)
 
             if self.mapa.robot.vidas <= 0:
                 print("¡Te quedaste sin vidas! Has perdido.")
