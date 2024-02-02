@@ -21,8 +21,6 @@ class Bomba(pygame.sprite.Sprite):
         for fila, columna in adyacentes:
             # Verificar si la posición es válida en el mapa
             if 0 <= fila < mapa.filas and 0 <= columna < mapa.columnas:
-                # Lógica de explosión para cada posición adyacente en el mapa
-                # Puedes acceder a los elementos del mapa según sea necesario
                 muro = mapa.obtener_muro_en_posicion(fila, columna)
                 if muro:
                     mapa.remover_muro(muro)
@@ -30,7 +28,6 @@ class Bomba(pygame.sprite.Sprite):
                 if traje_acuatico:
                     mapa.remover_traje_acuatico(traje_acuatico)
 
-                # Implementa la lógica para detonar otras bombas en cadena si las hay
                 bomba = mapa.obtener_bomba_en_posicion(fila, columna)
                 if bomba:
                     bomba.explotar(mapa)

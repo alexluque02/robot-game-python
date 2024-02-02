@@ -68,7 +68,7 @@ class Juego:
 
     def run(self, tamano_celda):
         jugando = True
-        ganador = False
+        #ganador = False
 
         while jugando:
             for event in pygame.event.get():
@@ -104,8 +104,8 @@ class Juego:
                 print("¡Te quedaste sin vidas! Has perdido.")
                 jugando = False
 
-            if self.mapa.robot.check_win(self.mapa) and not ganador:
-                ganador = True
+            #if self.mapa.robot.check_win(self.mapa) and not ganador:
+            #    ganador = True
 
             self.screen.fill(BLANCO)
             self.screen.blit(self.imagen_fondo, (0, 0))
