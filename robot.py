@@ -22,39 +22,53 @@ class Robot(pygame.sprite.Sprite):
 
         if direccion == "arriba" and nueva_posicion[0] > 0:
             nueva_posicion[0] -= 1
-            self.image = pygame.image.load("images/spritearriba.png")
-            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            if self.usando_traje_agua:
+                self.image = pygame.image.load("images/spritearribawater.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            else:
+                self.image = pygame.image.load("images/spritearriba.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         elif direccion == "abajo" and nueva_posicion[0] < mapa.filas - 1:
             nueva_posicion[0] += 1
-            self.image = pygame.image.load("images/spriteabajo.png")
-            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            if self.usando_traje_agua:
+                self.image = pygame.image.load("images/spriteabajowater.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            else:
+                self.image = pygame.image.load("images/spriteabajo.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         elif direccion == "izquierda" and nueva_posicion[1] > 0:
             nueva_posicion[1] -= 1
-            self.image = pygame.image.load("images/spriteizq.png")
-            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            if self.usando_traje_agua:
+                self.image = pygame.image.load("images/spriteizqwater.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            else:
+                self.image = pygame.image.load("images/spriteizq.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
         elif direccion == "derecha" and nueva_posicion[1] < mapa.columnas - 1:
             nueva_posicion[1] += 1
-            self.image = pygame.image.load("images/spriteder.png")
-            self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            if self.usando_traje_agua:
+                self.image = pygame.image.load("images/spritederwater.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
+            else:
+                self.image = pygame.image.load("images/spriteder.png")
+                self.image = pygame.transform.scale(self.image, (tamano_celda, tamano_celda))
 
         for agua in mapa.aguas:
-            if nueva_posicion == [agua.fila, agua.columna]:
+            if nueva_posicion == [agua.posicion[0], agua.posicion[1]]:
                 if self.usando_traje_agua:
                     print("Estás usando el traje de agua")
                 else:
                     self.vidas -= 3  # Restar 3 puntos de vida por cada celda de agua
                     print("Te sumergiste en el agua. Vidas restantes:", self.vidas)
                 break
-            if self.posicion == [agua.fila, agua.columna] and nueva_posicion not in [(a.fila, a.columna) for a in mapa.aguas]:
+            if self.posicion == [agua.posicion[0], agua.posicion[1]] and all(nueva_posicion != [a.posicion[0],
+                                                                                                a.posicion[1]] for a in
+                                                                             mapa.aguas):
                 if self.usando_traje_agua:
                     self.quitar_traje_agua()
                     self.usando_traje_agua = False
                     print("Has salido del agua. El traje de agua se ha quitado.")
                 break
-
-        #print("Posición actual:", self.posicion)
-        #print("Nueva posición:", nueva_posicion)
-        #print("Celdas de agua:", [(a.fila, a.columna) for a in mapa.aguas])
 
         if nueva_posicion not in [(diamante.posicion[0], diamante.posicion[1]) for diamante in mapa.diamantes]:
             for muro in mapa.muros:
@@ -121,7 +135,7 @@ class Robot(pygame.sprite.Sprite):
     def detonar_bomba(self, mapa):
         if self.bombas:
             bomba = self.bombas.pop(0)
-            bomba.explotar(mapa)
+            bomba.explotar(mapa, self.posicion)
 
     def tomar_pocion(self):
         if self.pociones:

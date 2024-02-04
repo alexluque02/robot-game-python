@@ -1,6 +1,5 @@
 from juego import Juego
 
-
 # Configuración del juego
 filas = 30
 columnas = 50
@@ -10,5 +9,13 @@ ruta_imagen_fondo = 'images/fondo.jpg'
 
 # Iniciar el juego
 juego = Juego(filas, columnas, tamano_celda, ruta_mapa, ruta_imagen_fondo)
-juego.run(tamano_celda)
 
+while True:
+    juego.run(tamano_celda)  # Iniciar el juego
+
+    if juego.reiniciar:
+        juego.reiniciar = False
+        juego = Juego(filas, columnas, tamano_celda, ruta_mapa, ruta_imagen_fondo)
+        juego.run(tamano_celda)
+    else:
+        break

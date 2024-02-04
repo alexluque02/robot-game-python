@@ -1,9 +1,6 @@
 import pygame
 import sys
 
-from pygame.locals import KEYDOWN, K_t
-
-import mapa
 from mapa import Mapa
 
 ROJO = (255, 0, 0)
@@ -19,10 +16,12 @@ class Juego:
         self.tamano_celda = tamano_celda
         self.screen = pygame.display.set_mode((columnas * tamano_celda, filas * tamano_celda + 30))
         pygame.display.set_caption("Juego del Robot")
-        self.mapa = Mapa(ruta_mapa, tamano_celda)  # Crear instancia de Mapa
-        self.imagen_fondo = pygame.image.load(ruta_imagen_fondo)  # Cargar la imagen de fondo
+        self.mapa = Mapa(ruta_mapa, tamano_celda)
+        self.imagen_fondo = pygame.image.load(ruta_imagen_fondo)
         self.imagen_fondo = pygame.transform.scale(self.imagen_fondo, (columnas * tamano_celda, filas * tamano_celda))
         self.reloj = pygame.time.Clock()
+        self.jugando = True
+        self.reiniciar = False
 
     def dibujar_info(self):
         font = pygame.font.Font(None, 24)
@@ -67,13 +66,12 @@ class Juego:
         self.screen.blit(texto_pocion, (225, self.filas * self.tamano_celda + 5))
 
     def run(self, tamano_celda):
-        jugando = True
-        #ganador = False
+        ganador = False
 
-        while jugando:
+        while self.jugando:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    jugando = False
+                    self.salir_juego()
 
             keys = pygame.key.get_pressed()
 
@@ -100,12 +98,13 @@ class Juego:
             self.mapa.robot.recoger_bombas(self.mapa)
             self.mapa.robot.recoger_pociones(self.mapa)
 
+            if len(self.mapa.robot.diamantes) >= self.mapa.num_diamantes:
+                ganador = True
+                self.jugando = False
+
             if self.mapa.robot.vidas <= 0:
                 print("¡Te quedaste sin vidas! Has perdido.")
-                jugando = False
-
-            #if self.mapa.robot.check_win(self.mapa) and not ganador:
-            #    ganador = True
+                self.jugando = False
 
             self.screen.fill(BLANCO)
             self.screen.blit(self.imagen_fondo, (0, 0))
@@ -121,5 +120,51 @@ class Juego:
 
             self.reloj.tick(10)
 
+        # Mostrar mensaje de ganar
+        if ganador:
+            self.mostrar_mensaje_ganador()
+            self.mostrar_pantalla_reinicio()
+        else:
+            self.mostrar_game_over()
+            self.mostrar_pantalla_reinicio()
+
+    def mostrar_game_over(self):
+        font = pygame.font.Font(None, 50)
+        texto_game_over = font.render("¡Game Over! Has perdido.", True, ROJO)
+        self.screen.blit(texto_game_over,
+                         (self.columnas * self.tamano_celda // 2 - 200, self.filas * self.tamano_celda // 2))
+        pygame.display.flip()
+        pygame.time.wait(2000)
+
+    def salir_juego(self):
         pygame.quit()
         sys.exit()
+
+    def mostrar_mensaje_ganador(self):
+        font = pygame.font.Font(None, 50)
+        texto_ganador = font.render("¡Felicidades, has ganado!", True, ROJO)
+        self.screen.blit(texto_ganador,
+                         (self.columnas * self.tamano_celda // 2 - 150, self.filas * self.tamano_celda // 2))
+        pygame.display.flip()
+        pygame.time.wait(2000)
+
+    def mostrar_pantalla_reinicio(self):
+        reiniciar_texto = "Presiona 'R' para reiniciar o 'Q' para salir."
+        font = pygame.font.Font(None, 30)
+        texto_reinicio = font.render(reiniciar_texto, True, ROJO)
+        self.screen.blit(texto_reinicio,
+                         (self.columnas * self.tamano_celda // 2 - 200, self.filas * self.tamano_celda // 2 + 50))
+        pygame.display.flip()
+
+        self.jugando = True
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.salir_juego()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.reiniciar = True
+                        return
+                    elif event.key == pygame.K_q:
+                        self.salir_juego()

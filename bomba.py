@@ -10,12 +10,12 @@ class Bomba(pygame.sprite.Sprite):
         self.posicion = [fila, columna]
         self.tamano_celda = tamano_celda
 
-    def explotar(self, mapa):
+    def explotar(self, mapa, posicion):
         adyacentes = [
-            (self.rect.y - self.tamano_celda, self.rect.x),  # Arriba
-            (self.rect.y + self.tamano_celda, self.rect.x),  # Abajo
-            (self.rect.y, self.rect.x - self.tamano_celda),  # Izquierda
-            (self.rect.y, self.rect.x + self.tamano_celda)   # Derecha
+            (posicion[0] - 1, posicion[1]),  # Arriba
+            (posicion[0] + 1, posicion[1]),  # Abajo
+            (posicion[0], posicion[1] - 1),  # Izquierda
+            (posicion[0], posicion[1] + 1)  # Derecha
         ]
 
         for fila, columna in adyacentes:
@@ -30,7 +30,7 @@ class Bomba(pygame.sprite.Sprite):
 
                 bomba = mapa.obtener_bomba_en_posicion(fila, columna)
                 if bomba:
-                    bomba.explotar(mapa)
+                    bomba.explotar(mapa, posicion)
 
     def dibujar(self, screen):
         screen.blit(self.image, (self.posicion[1] * self.rect.width, self.posicion[0] * self.rect.height))
