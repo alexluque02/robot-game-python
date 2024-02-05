@@ -76,8 +76,10 @@ class Robot(pygame.sprite.Sprite):
         if nueva_posicion not in [(diamante.posicion[0], diamante.posicion[1]) for diamante in mapa.diamantes]:
             for muro in mapa.muros:
                 if nueva_posicion == [muro.fila, muro.columna]:
+                    sonido_wrong = pygame.mixer.Sound("sound/wrong.mp3")
+                    sonido_wrong.set_volume(1)
+                    sonido_wrong.play()
                     self.vidas -= 1
-                    print("¡Chocaste con un obstáculo! Vidas restantes:", self.vidas)
                     return
             self.posicion = nueva_posicion
 
