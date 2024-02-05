@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc63274c-134b-4b7f-b347-15f3cbe836af" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/suelo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/agua.py" beforeDir="false" afterPath="$PROJECT_DIR$/agua.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bomba.py" beforeDir="false" afterPath="$PROJECT_DIR$/bomba.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/muro.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/muro.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/juego.py" beforeDir="false" afterPath="$PROJECT_DIR$/juego.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mapa.py" beforeDir="false" afterPath="$PROJECT_DIR$/mapa.py" afterDir="false" />
@@ -107,18 +101,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/robot.py</url>
-          <line>134</line>
+          <line>150</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bomba.py</url>
           <line>20</line>
           <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/juego.py</url>
-          <line>165</line>
-          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -129,5 +118,11 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="keys" />
+        <watch expression="keys" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

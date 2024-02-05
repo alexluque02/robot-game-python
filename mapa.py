@@ -12,7 +12,7 @@ from trajeAgua import TrajeAgua
 
 
 class Mapa:
-    def __init__(self, ruta_archivo, tamano_celda, num_diamantes=1, num_trajes_agua=3, num_bombas=6, num_pociones=2):
+    def __init__(self, ruta_archivo, tamano_celda, num_diamantes=12, num_trajes_agua=3, num_bombas=6, num_pociones=3):
         self.tamano_celda = tamano_celda
         self.num_diamantes = num_diamantes
         self.num_trajes_agua = num_trajes_agua
@@ -52,21 +52,22 @@ class Mapa:
                     suelo = Suelo(fila, columna, self.tamano_celda)
                     self.suelo.append(suelo)
 
-        diamantes_agregados = 0 #Que no haya mas diamantes en el muro que bombas
+        for agua in self.aguas:
+            print(agua.posicion)
+
+        diamantes_agregados = 0
         while diamantes_agregados < self.num_diamantes:
-            fila = random.randint(0, self.filas - 4)
+            fila = random.randint(0, self.filas - 1)
             columna = random.randint(0, self.columnas - 1)
-            if all((#(fila, columna) not in (muro.posicion for muro in self.muros),
-                    (fila, columna) != self.robot.posicion,
+            if all(((fila, columna) != self.robot.posicion,
                     (fila, columna) not in (diamante.posicion for diamante in self.diamantes))):
                 diamante = Diamond(fila, columna, self.tamano_celda)
                 self.diamantes.append(diamante)
-                print("Diamantes agregados:", diamante.posicion)
                 diamantes_agregados += 1
 
         trajes_agua_agregados = 0
         while trajes_agua_agregados < self.num_trajes_agua:
-            fila = random.randint(0, self.filas - 4)
+            fila = random.randint(0, self.filas - 1)
             columna = random.randint(0, self.columnas - 1)
             if all(((fila, columna) not in (muro.posicion for muro in self.muros),
                     (fila, columna) != self.robot.posicion,
@@ -79,7 +80,7 @@ class Mapa:
 
         bombas_agregadas = 0
         while bombas_agregadas < self.num_bombas:
-            fila = random.randint(0, self.filas - 4)
+            fila = random.randint(0, self.filas - 1)
             columna = random.randint(0, self.columnas - 1)
             if all(((fila, columna) not in (muro.posicion for muro in self.muros),
                     (fila, columna) != self.robot.posicion,
@@ -90,9 +91,10 @@ class Mapa:
                 bomba = Bomba(fila, columna, self.tamano_celda)
                 self.bombas.append(bomba)
                 bombas_agregadas += 1
+
         pociones_agregadas = 0
         while pociones_agregadas < self.num_pociones:
-            fila = random.randint(0, self.filas - 4)
+            fila = random.randint(0, self.filas - 1)
             columna = random.randint(0, self.columnas - 1)
             if all(((fila, columna) not in (muro.posicion for muro in self.muros),
                     (fila, columna) != self.robot.posicion,

@@ -9,7 +9,7 @@ class Agua(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = columna * tamano_celda
         self.rect.y = fila * tamano_celda
-        self.posicion = [fila, columna]
+        self.posicion = (fila, columna)
 
     def dibujar(self, screen):
         screen.blit(self.image, self.rect)

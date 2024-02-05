@@ -1,4 +1,5 @@
 import pygame
+import pygame.mixer
 import sys
 
 from mapa import Mapa
@@ -9,7 +10,7 @@ NEGRO = (0, 0, 0)
 
 
 class Juego:
-    def __init__(self, filas, columnas, tamano_celda, ruta_mapa, ruta_imagen_fondo):
+    def __init__(self, filas, columnas, tamano_celda, ruta_mapa):
         pygame.init()
         self.filas = filas
         self.columnas = columnas
@@ -17,11 +18,13 @@ class Juego:
         self.screen = pygame.display.set_mode((columnas * tamano_celda, filas * tamano_celda + 30))
         pygame.display.set_caption("Juego del Robot")
         self.mapa = Mapa(ruta_mapa, tamano_celda)
-        self.imagen_fondo = pygame.image.load(ruta_imagen_fondo)
-        self.imagen_fondo = pygame.transform.scale(self.imagen_fondo, (columnas * tamano_celda, filas * tamano_celda))
         self.reloj = pygame.time.Clock()
         self.jugando = True
         self.reiniciar = False
+        pygame.mixer.init()
+        pygame.mixer.music.load("sound/melodia.mp3")
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
 
     def dibujar_info(self):
         font = pygame.font.Font(None, 24)
@@ -72,6 +75,9 @@ class Juego:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.salir_juego()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
+                        self.mostrar_confirmacion_salida()
 
             keys = pygame.key.get_pressed()
 
@@ -107,13 +113,11 @@ class Juego:
                 self.jugando = False
 
             self.screen.fill(BLANCO)
-            self.screen.blit(self.imagen_fondo, (0, 0))
             self.mapa.dibujar(self.screen)
             self.screen.blit(self.mapa.robot.image,
                              (self.mapa.robot.posicion[1] * self.tamano_celda,
                               self.mapa.robot.posicion[0] * self.tamano_celda))
 
-            # Dibujar información
             self.dibujar_info()
 
             pygame.display.flip()
@@ -129,42 +133,115 @@ class Juego:
             self.mostrar_pantalla_reinicio()
 
     def mostrar_game_over(self):
-        font = pygame.font.Font(None, 50)
-        texto_game_over = font.render("¡Game Over! Has perdido.", True, ROJO)
-        self.screen.blit(texto_game_over,
-                         (self.columnas * self.tamano_celda // 2 - 200, self.filas * self.tamano_celda // 2))
+        font = pygame.font.Font("fuente.ttf", 70)
+        texto_game_over = font.render("Game Over", True, ROJO)
+
+        fondo = pygame.Surface((self.columnas * self.tamano_celda, self.filas * self.tamano_celda))
+        fondo.fill(NEGRO)
+
+        x = (fondo.get_width() - texto_game_over.get_width()) // 2
+        y = (fondo.get_height() - texto_game_over.get_height()) // 2
+
+        fondo.blit(texto_game_over, (x, y))
+
+        self.screen.blit(fondo, (0, 0))
         pygame.display.flip()
         pygame.time.wait(2000)
 
-    def salir_juego(self):
-        pygame.quit()
-        sys.exit()
-
     def mostrar_mensaje_ganador(self):
-        font = pygame.font.Font(None, 50)
-        texto_ganador = font.render("¡Felicidades, has ganado!", True, ROJO)
-        self.screen.blit(texto_ganador,
-                         (self.columnas * self.tamano_celda // 2 - 150, self.filas * self.tamano_celda // 2))
+        font = pygame.font.Font("fuente.ttf", 70)
+        texto_ganador = font.render("Felicidades, has ganado", True, ROJO)
+
+        fondo = pygame.Surface((self.columnas * self.tamano_celda, self.filas * self.tamano_celda))
+        fondo.fill(NEGRO)
+
+        x = (fondo.get_width() - texto_ganador.get_width()) // 2
+        y = (fondo.get_height() - texto_ganador.get_height()) // 2
+
+        fondo.blit(texto_ganador, (x, y))
+
+        self.screen.blit(fondo, (0, 0))
         pygame.display.flip()
         pygame.time.wait(2000)
 
     def mostrar_pantalla_reinicio(self):
-        reiniciar_texto = "Presiona 'R' para reiniciar o 'Q' para salir."
-        font = pygame.font.Font(None, 30)
-        texto_reinicio = font.render(reiniciar_texto, True, ROJO)
-        self.screen.blit(texto_reinicio,
-                         (self.columnas * self.tamano_celda // 2 - 200, self.filas * self.tamano_celda // 2 + 50))
+        button_width, button_height = 100, 50
+        button_x = (self.screen.get_width() - 2 * button_width) // 2
+        button_y = (self.screen.get_height() - button_height) // 2 + 70
+
+        pygame.draw.rect(self.screen, BLANCO, (button_x, button_y, button_width, button_height))
+        pygame.draw.rect(self.screen, BLANCO, (button_x + button_width + 20, button_y, button_width, button_height))
+
+        font_botones = pygame.font.Font(None, 24)
+        text_reiniciar = font_botones.render("Reiniciar", True, ROJO)
+        text_salir = font_botones.render("Salir", True, ROJO)
+
+        self.screen.blit(text_reiniciar, (button_x + 15, button_y + 15))
+        self.screen.blit(text_salir, (button_x + button_width + 50, button_y + 15))
+
         pygame.display.flip()
 
-        self.jugando = True
+        esperando_click = True
+        while esperando_click:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.salir_juego()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    if button_x < x < button_x + button_width and button_y < y < button_y + button_height:
+                        self.reiniciar = True
+                        esperando_click = False
+                    elif button_x + button_width + 20 < x < button_x + 2 * button_width + 20 and button_y < y < button_y + button_height:
+                        self.salir_juego()
+                        esperando_click = False
+
+    def salir_juego(self):
+        pygame.mixer.music.stop()
+        pygame.quit()
+        sys.exit()
+
+    def mostrar_confirmacion_salida(self):
+        confirmacion = self.mostrar_botones_confirmacion("¿Estás seguro de que quieres salir?")
+        if confirmacion == "Sí":
+            self.salir_juego()
+
+    def mostrar_botones_confirmacion(self, mensaje):
+        fondo_ancho, fondo_alto = 500, 200
+        fondo_x = (self.screen.get_width() - fondo_ancho) // 2
+        fondo_y = (self.screen.get_height() - fondo_alto) // 2
+        fondo = pygame.Surface((fondo_ancho, fondo_alto))
+        fondo.fill(ROJO)
+        self.screen.blit(fondo, (fondo_x, fondo_y))
+
+        font_mensaje = pygame.font.Font(None, 36)
+        text_mensaje = font_mensaje.render(mensaje, True, BLANCO)
+        mensaje_x = (self.screen.get_width() - text_mensaje.get_width()) // 2
+        mensaje_y = fondo_y + 50
+        self.screen.blit(text_mensaje, (mensaje_x, mensaje_y))
+
+        button_width, button_height = 100, 50
+        button_x = (self.screen.get_width() - 2 * button_width) // 2
+        button_y = fondo_y + 90
+
+        pygame.draw.rect(self.screen, BLANCO, (button_x, button_y, button_width, button_height))
+        pygame.draw.rect(self.screen, BLANCO, (button_x + button_width + 20, button_y, button_width, button_height))
+
+        font = pygame.font.Font(None, 24)
+        text_si = font.render("Sí", True, ROJO)
+        text_no = font.render("No", True, ROJO)
+
+        self.screen.blit(text_si, (button_x + 40, button_y + 15))
+        self.screen.blit(text_no, (button_x + button_width + 60, button_y + 15))
+
+        pygame.display.flip()
 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.salir_juego()
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
-                        self.reiniciar = True
-                        return
-                    elif event.key == pygame.K_q:
-                        self.salir_juego()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    if button_x < x < button_x + button_width and button_y < y < button_y + button_height:
+                        return "Sí"
+                    elif button_x + button_width + 20 < x < button_x + 2 * button_width + 20 and button_y < y < button_y + button_height:
+                        return "No"
